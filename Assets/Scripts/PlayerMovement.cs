@@ -1,55 +1,84 @@
 using UnityEngine;
+using UnityEngine.InputSystem; 
 
 public class PlayerMovement : MonoBehaviour
 {
-    // --- Movimento para a Frente ---
-    public float playerSpeed = 2f;
-    public float acceleration = 0.1f;
-    public float maxSpeed = 20f;
+    [Header("Motor do Hacker (Velocidades)")]
+    public float playerSpeed = 10f;
+    public float acceleration = 0.7f;
+    public float maxSpeed = 100f;
 
-    // --- Sistema de Pistas (Lanes) ---
-    private int desiredLane = 1; // 0 = Esquerda, 1 = Centro, 2 = Direita
-    public float laneDistance = 3f; // Distância em metros entre cada pista (ajusta no Inspector)
-    public float sideSpeed = 10f; // Quão rápido ele muda de faixa
+    [Header("Sistema de Pistas (Lanes)")]
+    private int desiredLane = 1;
+    public float laneDistance = 3f;
+    public float sideSpeed = 100f;
+
+    [Header("Mecânica de Salto")]
+    public float jumpForce = 10f;
+    private Rigidbody rb;
+    private bool isGrounded = true;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
-        // 1. Aceleração e movimento constante para a frente
+        // 1. Aceleração
         if (playerSpeed < maxSpeed)
         {
             playerSpeed += acceleration * Time.deltaTime;
         }
-        // Move sempre para a frente em Z
+        
         transform.Translate(Vector3.forward * Time.deltaTime * playerSpeed);
 
-        // 2. Input para mudar de pista (Usamos GetKeyDown para reagir apenas ao "clique")
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        // Verificação de segurança para o teclado
+        if (Keyboard.current != null)
         {
-            desiredLane++;
-            if (desiredLane == 3) desiredLane = 2; // Bate na "parede" da direita e não passa
-        }
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            desiredLane--;
-            if (desiredLane == -1) desiredLane = 0; // Bate na "parede" da esquerda e não passa
+            // 2. Controlos de Pista (Esquerda / Direita com Setas ou A/D)
+            if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
+            {
+                desiredLane++;
+                if (desiredLane == 3) desiredLane = 2;
+            }
+            
+            if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
+            {
+                desiredLane--;
+                if (desiredLane == -1) desiredLane = 0;
+            }
+
+            // 3. O SALTO MULTI-TECLAS (Espaço, W ou Seta para Cima)
+            if ((Keyboard.current.spaceKey.wasPressedThisFrame || 
+                 Keyboard.current.wKey.wasPressedThisFrame || 
+                 Keyboard.current.upArrowKey.wasPressedThisFrame) && isGrounded)
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                isGrounded = false; 
+            }
         }
 
-        // 3. Calcular a posição X (lateral) onde o boneco devia estar
+        // 4. Mover lateralmente
         Vector3 targetPosition = transform.position;
         
-        if (desiredLane == 0)
-            targetPosition.x = -laneDistance; // Vai para a esquerda
-        else if (desiredLane == 1)
-            targetPosition.x = 0;             // Fica no centro
-        else if (desiredLane == 2)
-            targetPosition.x = laneDistance;  // Vai para a direita
+        if (desiredLane == 0) targetPosition.x = -laneDistance;
+        else if (desiredLane == 1) targetPosition.x = 0;
+        else if (desiredLane == 2) targetPosition.x = laneDistance;
 
-        // 4. Mover o boneco suavemente para essa posição (no eixo X)
-        // Mantemos o Y e o Z onde estão, só alteramos a posição lateral
         transform.position = new Vector3(
             Mathf.Lerp(transform.position.x, targetPosition.x, sideSpeed * Time.deltaTime),
-            transform.position.y,
+            transform.position.y, 
             transform.position.z
         );
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        // Recarrega o salto quando bater no chão (que não seja um obstáculo)
+        if (!collision.gameObject.CompareTag("Obstacle"))
+        {
+            isGrounded = true;
+        }
     }
 }
