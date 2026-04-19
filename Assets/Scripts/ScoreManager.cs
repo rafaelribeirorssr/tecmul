@@ -1,16 +1,15 @@
 using UnityEngine;
-using TMPro; // Necessário para mexer no TextMeshPro
+using TMPro; 
 
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager instance; // Truque para outros scripts o encontrarem fácil
+    public static ScoreManager instance; 
     
     public TextMeshProUGUI scoreText;
     private int score = 0;
 
     void Awake()
     {
-        // Cria uma ligação direta para que as moedas te encontrem
         instance = this;
     }
 
@@ -22,6 +21,7 @@ public class ScoreManager : MonoBehaviour
 
     void AtualizarTexto()
     {
-        scoreText.text = "DADOS: " + score;
+        // O \n funciona como um "Enter" para o texto ficar nas linhas certas!
+        scoreText.text = "DINHEIRO\nROUBADO\n: " + score + " $$";
     }
 }
