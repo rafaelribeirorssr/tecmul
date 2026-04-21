@@ -36,9 +36,9 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Game"); // Garante que a cena se chama "Game"
     }
-
+    
     public void AbrirComoJogar()
     {
         MostrarApenasPanel(comoJogarPanel);
@@ -72,16 +72,24 @@ public class MainMenu : MonoBehaviour
 
     // ========== CONFIGURAÇÕES ==========
 
-    private void AlterarVolume(float valor)
+    // MUDOU AQUI: Agora é public em vez de private!
+    public void AlterarVolume(float valor)
     {
         AudioListener.volume = valor;
         PlayerPrefs.SetFloat("Volume", valor);
         PlayerPrefs.Save();
     }
 
-    private void AlterarFullscreen(bool ativo)
+    public void AlterarFullscreen(bool ativo)
     {
         Screen.fullScreen = ativo;
+        Debug.Log("Ecrã Inteiro: " + ativo);
+    }
+
+    public void DefinirQualidade(int indiceQualidade)
+    {
+        QualitySettings.SetQualityLevel(indiceQualidade);
+        Debug.Log("Qualidade alterada para o nível: " + indiceQualidade);
     }
 
     // ========== UTILIDADE ==========
