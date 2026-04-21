@@ -15,9 +15,12 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetBool("isRunning", true);
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        
+        Debug.Log("isGrounded: " + isGrounded);
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Espaço premido!");
             animator.SetTrigger("Jump");
         }
     }
