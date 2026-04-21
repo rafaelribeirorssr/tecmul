@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: ae96187280025154087ca04e6ab69790
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - roadPrefab: {instanceID: 0}
+  - pistaDeEdicao: {fileID: 4244925824793904325, guid: 7474975dc91506b40971c0b2a8a5c105, type: 3}
+  - coinPrefab: {fileID: 4402427592379492403, guid: cb729f4ccf1ba1c45be178f98ef0a3fb, type: 3}
+  - playerTransform: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

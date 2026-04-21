@@ -5,8 +5,9 @@ public class LevelManager : MonoBehaviour
 {
     [Header("Moldes (Prefabs)")]
     public GameObject roadPrefab;      
+    public GameObject pistaDeEdicao; // <-- NOVO: A pista que tens na cena para editar
     public GameObject[] obstaclePrefabs; 
-    public GameObject coinPrefab; // <-- NOVO: O buraco para o molde da tua moeda!
+    public GameObject coinPrefab; 
     public Transform playerTransform;  
     
     [Header("Configurações da Estrada")]
@@ -17,8 +18,8 @@ public class LevelManager : MonoBehaviour
 
     [Header("Geração de Itens")]
     [Range(0f, 1f)] public float obstacleChance = 1f; 
-    [Range(0f, 1f)] public float coinChance = 0.5f; // <-- NOVO: % de nascer uma moeda (50%)
-    public float distanceBetweenItems = 10f; // Espaço entre cada linha de itens
+    [Range(0f, 1f)] public float coinChance = 0.5f; 
+    public float distanceBetweenItems = 10f; 
     
     private List<GameObject> activeTiles = new List<GameObject>();
     
@@ -30,6 +31,12 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        // NOVO: Apaga a pista de edição mal o jogo começa para não piscar!
+        if (pistaDeEdicao != null)
+        {
+            Destroy(pistaDeEdicao);
+        }
+
         for (int i = 0; i < tilesOnScreen; i++)
         {
             SpawnTile();
@@ -51,12 +58,11 @@ public class LevelManager : MonoBehaviour
             if (activeItems[0] == null)
             {
                 // Se o item for nulo, significa que o Player apanhou a moeda e ela já foi destruída!
-                // Só precisamos de a remover da nossa lista.
                 activeItems.RemoveAt(0);
             }
             else if (activeItems[0].transform.position.z < playerTransform.position.z - 30f)
             {
-                // Se o obstáculo ou moeda ficou muito para trás nas costas do player, apagamos.
+                // Se o obstáculo ou moeda ficou muito para trás, apagamos.
                 Destroy(activeItems[0]);
                 activeItems.RemoveAt(0);
             }
@@ -127,7 +133,6 @@ public class LevelManager : MonoBehaviour
     {
         float xPos = (lane - 1) * laneDistance; 
         
-        // Coloca a moeda com a altura de flutuação e na rotação do teu prefab
         Vector3 spawnPos = new Vector3(xPos, alturaDaMoeda, zPos);
         GameObject moeda = Instantiate(coinPrefab, spawnPos, coinPrefab.transform.rotation);
         activeItems.Add(moeda); // Adiciona à lista de limpeza
