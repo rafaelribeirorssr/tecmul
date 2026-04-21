@@ -1,26 +1,25 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
-    private bool isGrounded;
 
     void Start()
     {
-        animator = GetComponentInChildren<Animator>();
+        animator = transform.Find("Remy@Running (1)").GetComponent<Animator>();
         animator.SetBool("isRunning", true);
     }
 
     void Update()
     {
         animator.SetBool("isRunning", true);
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
-        
-        Debug.Log("isGrounded: " + isGrounded);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Keyboard.current != null && 
+            (Keyboard.current.spaceKey.wasPressedThisFrame ||
+             Keyboard.current.wKey.wasPressedThisFrame ||
+             Keyboard.current.upArrowKey.wasPressedThisFrame))
         {
-            Debug.Log("Espaço premido!");
             animator.SetTrigger("Jump");
         }
     }

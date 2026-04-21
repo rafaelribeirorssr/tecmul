@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,57 +25,51 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // 1. Aceleração
         if (playerSpeed < maxSpeed)
         {
             playerSpeed += acceleration * Time.deltaTime;
         }
-        
+
         transform.Translate(Vector3.forward * Time.deltaTime * playerSpeed);
 
-        // Verificação de segurança para o teclado
         if (Keyboard.current != null)
         {
-            // 2. Controlos de Pista (Esquerda / Direita com Setas ou A/D)
             if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
             {
                 desiredLane++;
                 if (desiredLane == 3) desiredLane = 2;
             }
-            
+
             if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
             {
                 desiredLane--;
                 if (desiredLane == -1) desiredLane = 0;
             }
 
-            // 3. O SALTO MULTI-TECLAS (Espaço, W ou Seta para Cima)
-            if ((Keyboard.current.spaceKey.wasPressedThisFrame || 
-                 Keyboard.current.wKey.wasPressedThisFrame || 
-                 Keyboard.current.upArrowKey.wasPressedThisFrame) && isGrounded)
+            if ((Keyboard.current.spaceKey.wasPressedThisFrame ||
+                Keyboard.current.wKey.wasPressedThisFrame ||
+                Keyboard.current.upArrowKey.wasPressedThisFrame) && isGrounded)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isGrounded = false; 
+                isGrounded = false;
             }
         }
 
-        // 4. Mover lateralmente
         Vector3 targetPosition = transform.position;
-        
+
         if (desiredLane == 0) targetPosition.x = -laneDistance;
         else if (desiredLane == 1) targetPosition.x = 0;
         else if (desiredLane == 2) targetPosition.x = laneDistance;
 
         transform.position = new Vector3(
             Mathf.Lerp(transform.position.x, targetPosition.x, sideSpeed * Time.deltaTime),
-            transform.position.y, 
+            transform.position.y,
             transform.position.z
         );
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        // Recarrega o salto quando bater no chão (que não seja um obstáculo)
         if (!collision.gameObject.CompareTag("Obstacle"))
         {
             isGrounded = true;
