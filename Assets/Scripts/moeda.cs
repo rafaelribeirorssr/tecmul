@@ -4,6 +4,14 @@ public class Moeda : MonoBehaviour
 {
     public float velocidadeGiro = 150f;
     public int valorDaMoeda = 10;
+    public AudioClip somMoeda;
+
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = gameObject.AddComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -14,15 +22,16 @@ public class Moeda : MonoBehaviour
     {
         if (outro.CompareTag("Player"))
         {
-            // Avisa o ScoreManager para subir os pontos!
             if (ScoreManager.instance != null)
             {
                 ScoreManager.instance.AdicionarPonto(valorDaMoeda);
             }
 
-            // O efeito de desaparecer:
-            // 1. Podes spawnar um efeito de partículas aqui depois
-            // 2. Destrói a moeda
+            if (somMoeda != null)
+            {
+                AudioSource.PlayClipAtPoint(somMoeda, transform.position);
+            }
+
             Destroy(gameObject);
         }
     }

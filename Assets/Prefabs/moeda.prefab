@@ -128,3 +128,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   velocidadeGiro: 150
+  valorDaMoeda: 10
+  somMoeda: {fileID: 8300000, guid: 48d3342b6a3c01341a88bc4c9913ca45, type: 3}

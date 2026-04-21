@@ -1263,6 +1263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e16b5008e47a84aa159ed88fc74d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCollision
+  somColisao: {fileID: 8300000, guid: 2c296c913b874e34b86c2ef7b80f0b9d, type: 3}
 --- !u!54 &1224094755
 Rigidbody:
   m_ObjectHideFlags: 0
