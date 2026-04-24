@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Sistema de Pistas (Lanes)")]
     private int desiredLane = 1;
-    public float laneDistance = 5f;
+    public float laneDistance = 3f;
     public float sideSpeed = 100f;
 
     [Header("Mecânica de Salto")]
@@ -18,16 +18,11 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded = true;
 
-    public Animator animator;
-
     void Start()
-{
-    rb = GetComponent<Rigidbody>();
-    // Não uses GetComponentInChildren — arrasta manualmente no Inspector
-    
-    if (animator == null)
-        Debug.LogError("ARRASTA O ANIMATOR DO HACKER PARA ESTE CAMPO!");
-}
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
         if (playerSpeed < maxSpeed)
@@ -36,10 +31,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         transform.Translate(Vector3.forward * Time.deltaTime * playerSpeed);
-
-        // Animação de correr sempre ativa
-        if (animator != null)
-            animator.SetBool("IsRunning", true);
 
         if (Keyboard.current != null)
         {
@@ -61,13 +52,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 isGrounded = false;
-
-                // Animação de salto
-                if (animator != null)
-                {
-                    animator.SetBool("IsJumping", true);
-                    animator.SetBool("IsRunning", false);
-                }
             }
         }
 
@@ -89,13 +73,6 @@ public class PlayerMovement : MonoBehaviour
         if (!collision.gameObject.CompareTag("Obstacle"))
         {
             isGrounded = true;
-
-            // Volta à animação de correr
-            if (animator != null)
-            {
-                animator.SetBool("IsJumping", false);
-                animator.SetBool("IsRunning", true);
-            }
         }
     }
 }
